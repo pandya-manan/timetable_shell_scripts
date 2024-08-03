@@ -1,0 +1,101 @@
+LAB 1 ASSIGNMENT
+
+TIMETABLE.CSV QUESTIONS
+
+Basic Operations
+1. Display Specific Day's Schedule:
+Write a bash script( todays_schedule.sh ) that displays the schedule for
+today.
+Usage: todays_schedule.sh
+
+Solution:
+day=$(date +%A)
+echo "Schedule for the current day which is $day is:"
+grep "^$day",timetable.csv
+
+2.Count Courses Per Instructor
+Write a bash script that counts the number of courses each instructor is
+teaching.
+Usage: instructor_course_count.sh instructor_name
+
+Solution:
+#!/bin/bash
+read inst_name
+echo "Number of courses taught by $inst_name"
+grep -c $inst_name timetable.csv
+
+3.List Courses in a Specific Room:
+Write a bash script that lists all the courses that are held in a specific
+room.
+Usage: room_course_list.sh room_name
+
+Solution:
+#!/bin/bash
+read room_name
+echo "Courses taught in the room $room_name are:"
+grep -i "$room_name" timetable.csv
+
+4.Extract Timetable for a Specific Course:
+Write a bash script that extracts and displays the timetable for a specific
+course.
+Usage: course_timetable.sh
+
+Solution:
+#!/bin/bash
+read course_name
+echo "The timetable for the course $course_name is:"
+grep "$course_name" timetable.csv
+
+Intermediate
+
+1.Find out when a room is empty during the week.
+Usage: room_empty_slots.sh CEP-207
+
+Solution:
+#!/bin/bash
+file="timetable.csv"
+read -p "Enter the room name: " room_name
+tail -n +2 $file > temp.csv
+echo "The slots when a room is empty during the week are:"
+
+days=("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
+times=("8:00-8:50" "9:00-9:50" "10:00-10:50" "11:00-11:50" "12:00-12:50")
+
+
+for day in "${days[@]}"; do
+  for time in "${times[@]}"; do
+    if ! grep -q "$day,$time,.*,$room_name" temp.csv; then
+      echo "$day $time"
+    fi
+  done
+done
+
+2.Count Classes per Room per Day:
+Write a bash script to count how many classes are held in each room for
+each day.
+Usage: room_class_count.sh
+Output:
+Room, Day, Count 
+CEP-207, Monday,3
+CEP-103, Tuesday,5
+
+Solution:
+#!/bin/bash
+file="timetable.csv"
+tail -n +2 $file > temp.csv
+
+echo "Room Day Count"
+
+
+days=("Monday" "Tuesday" "Wednesday" "Thursday" "Friday")
+rooms=("CEP-102" "CEP-103" "CEP-105" "CEP-106" "CEP-107" "CEP-108" "CEP-109" "CEP-110" "CEP-202" "CEP-203" "CEP-204" "C>
+
+for day in "${days[@]}"; do
+    for room in "${rooms[@]}"; do
+        count=$(grep -c "$day,.*,.*,.*,${room}" temp.csv)
+        echo "$room $day $count"
+    done
+done
+
+
+rm temp.csv
